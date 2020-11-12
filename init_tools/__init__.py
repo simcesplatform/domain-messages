@@ -6,8 +6,7 @@ import os
 import sys
 
 SUB_MODULES = [
-    "domain-messages",
-    "domain-messages/simulation-tools"
+    "simulation-tools"
 ]
 
 for sub_module in SUB_MODULES:

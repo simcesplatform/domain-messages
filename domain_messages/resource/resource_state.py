@@ -8,6 +8,7 @@ from typing import Any, Dict, Union
 from tools.exceptions.messages import MessageValueError
 from tools.message.abstract import AbstractResultMessage, AbstractMessage
 from tools.message.block import QuantityBlock
+from tools.messages import MESSAGE_TYPES
 from tools.tools import FullLogger
 
 LOGGER = FullLogger(__name__)
@@ -190,3 +191,5 @@ class ResourceStateMessage(AbstractResultMessage):
         if cls.validate_json(json_message):
             return cls(**json_message)
         return None
+
+MESSAGE_TYPES['ResourceState'] = ResourceStateMessage
