@@ -8,7 +8,6 @@ from typing import Any, Dict, Union
 from tools.exceptions.messages import MessageValueError
 from tools.message.abstract import AbstractResultMessage, AbstractMessage
 from tools.message.block import QuantityBlock
-from tools.messages import MESSAGE_TYPES
 from tools.tools import FullLogger
 
 LOGGER = FullLogger(__name__)
@@ -71,7 +70,7 @@ class ResourceStateMessage(AbstractResultMessage):
         """Node that 1-phase resource is connected to.
            If this is not specified then it is assumed that the resource is 3-phase resource."""
         return self.__node
-    
+
     @property
     def state_of_charge(self) -> Union[QuantityBlock, None]:
         """Present amount of energy stored, % of rated kWh. Unit of measure: "%"."""
@@ -96,7 +95,7 @@ class ResourceStateMessage(AbstractResultMessage):
         if self._check_real_power(real_power):
             self._set_quantity_block_value('RealPower', real_power)
             return
-        
+
         raise MessageValueError("'{:s}' is an invalid value for real power.".format(str(real_power)))
 
     @reactive_power.setter
@@ -111,7 +110,7 @@ class ResourceStateMessage(AbstractResultMessage):
             return
 
         raise MessageValueError("'{:s}' is an invalid value for reactive power.".format(str(reactive_power)))
-    
+
     @state_of_charge.setter
     def state_of_charge(self, state_of_charge: Union[float, str, dict, QuantityBlock, None]):
         """Set value for state of charge.
@@ -122,7 +121,7 @@ class ResourceStateMessage(AbstractResultMessage):
         if self._check_state_of_charge( state_of_charge ):
             self._set_quantity_block_value("StateOfCharge", state_of_charge )
             return
-            
+
         raise MessageValueError("'{:s}' is an invalid value for state of charge.".format(str(state_of_charge)))
 
     @node.setter
@@ -148,7 +147,7 @@ class ResourceStateMessage(AbstractResultMessage):
             self.real_power == other.real_power and
             self.reactive_power == other.reactive_power and
             self.node == other.node and
-            self.state_of_charge == other.state_of_charge 
+            self.state_of_charge == other.state_of_charge
         )
 
     @classmethod
@@ -165,7 +164,7 @@ class ResourceStateMessage(AbstractResultMessage):
     def _check_reactive_power(cls, reactive_power: Union[str, float, QuantityBlock]) -> bool:
         """Check that value for reactive power is valid."""
         return cls._check_quantity_block(reactive_power, cls.QUANTITY_BLOCK_ATTRIBUTES_FULL['ReactivePower'])
-    
+
     @classmethod
     def _check_state_of_charge(cls, state_of_charge: Union[str, float, QuantityBlock, None]) -> bool:
         """Check that value for state of charge is valid which includes checking that it is between 0 and 100."""
@@ -192,4 +191,5 @@ class ResourceStateMessage(AbstractResultMessage):
             return cls(**json_message)
         return None
 
-MESSAGE_TYPES['ResourceState'] = ResourceStateMessage
+
+ResourceStateMessage.register_to_factory()
