@@ -10,6 +10,10 @@ The following messages have been defined:
     - Child class of AbstractResultMessage
     - Adds Bus, RealPower, ReactivePower, Node and StateOfCharge
     - Definition: [ResourceState](https://wiki.eduuni.fi/display/tuniSimCES/ResourceState)
+- `PriceForecastStateMessage`
+    - Child class of AbstractResultMessage
+    - Adds MarketId, ResourceId, PricingType, Prices
+    - Definition: [ResourceState](https://wiki.eduuni.fi/display/tuniSimCES/PriceForecastState)
     
 ## How to include domain-messages to your own project
 
