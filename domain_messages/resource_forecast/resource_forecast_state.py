@@ -19,7 +19,7 @@ class ResourceForecastPowerMessage(AbstractResultMessage):
     """Class containing all the attributes for a ResourceForecastPower message."""
 
     # message type for these messages
-    CLASS_MESSAGE_TYPE = "ResourceForecast.Power"
+    CLASS_MESSAGE_TYPE = "ResourceForecastState.Power"
     MESSAGE_TYPE_CHECK = True
     
     FORECAST_ATTRIBUTE = "Forecast"
