@@ -1,1 +1,1 @@
-from domain_messages.forecast.price_forecast import PriceForecastStateMessage
+from domain_messages.price_forecaster.price_forecast import PriceForecastStateMessage
