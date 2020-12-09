@@ -21,12 +21,12 @@ class ResourceForecastPowerMessage(AbstractResultMessage):
     MESSAGE_TYPE_CHECK = True
     
     FORECAST_ATTRIBUTE = "Forecast"
-    REAL_POWER_SERIES_NAMES = ["RealPower"]
-    REAL_POWER_SERIES_UNIT = "kW"
+    FORECAST_SERIES_NAMES = ["RealPower"]
+    FORECAST_SERIES_UNIT = "kW"
 
     # Mapping from message JSON attributes to class attributes
     MESSAGE_ATTRIBUTES = {
-        "Forecast": "real_power",
+        "Forecast": "forecast",
         "ResourceName": "resource_name"
     }
     OPTIONAL_ATTRIBUTES = []
@@ -65,9 +65,9 @@ class ResourceForecastPowerMessage(AbstractResultMessage):
         return self.__resource_name
 
     @property
-    def real_power(self) -> TimeSeriesBlock:
-        """The attribute for real power of the resource."""
-        return self.__real_power
+    def forecast(self) -> TimeSeriesBlock:
+        """The attribute for forecast of the resource."""
+        return self.__forecast
 
     @resource_name.setter
     def resource_name(self, resource_name: str):
@@ -77,19 +77,19 @@ class ResourceForecastPowerMessage(AbstractResultMessage):
         else:
             raise MessageValueError("Invalid value, {}, for attribute: resource_name".format(resource_name))
 
-    @real_power.setter
-    def real_power(self, real_power: Union[TimeSeriesBlock, Dict[str, Any]]):
-        """Set value for real power.
+    @forecast.setter
+    def forecast(self, forecast: Union[TimeSeriesBlock, Dict[str, Any]]):
+        """Set value for forecast. Series should have at least 2 time indexes and values. 
         A string value is converted to a float. A float value is converted into a QuantityBlock with the default unit.
         A dict is converted to a QuantityBlock.
         Raises MessageValueError if value is missing or invalid: a QuantityBlock has the wrong unit, dict cannot be converted  or
         a string cannot be converted to float"""
 
-        if self._check_real_power(real_power):
-            self._set_timeseries_block_value(self.FORECAST_ATTRIBUTE, real_power)
+        if self._check_forecast(forecast):
+            self._set_timeseries_block_value(self.FORECAST_ATTRIBUTE, forecast)
             return
         else:
-            raise MessageValueError("Invalid value, {}, for attribute: real_power".format(real_power))
+            raise MessageValueError("Invalid value, {}, for attribute: forecast".format(forecast))
 
     def __eq__(self, other: Any) -> bool:
         """Check that two ResourceForecastPowerMessages represent the same message."""
@@ -97,7 +97,7 @@ class ResourceForecastPowerMessage(AbstractResultMessage):
             super().__eq__(other) and
             isinstance(other, ResourceForecastPowerMessage) and
             self.resource_name == other.resource_name and
-            self.real_power == other.real_power
+            self.forecast == other.forecast
         )
 
     @classmethod
@@ -106,21 +106,21 @@ class ResourceForecastPowerMessage(AbstractResultMessage):
         return isinstance(resource_name, str)
 
     @classmethod
-    def _check_real_power(cls, real_power: Union[TimeSeriesBlock, Dict[str, Any]]) -> bool:
-        """Check that value for real power is valid."""
+    def _check_forecast(cls, forecast: Union[TimeSeriesBlock, Dict[str, Any]]) -> bool:
+        """Check that value for forecast is valid."""
         return cls._check_timeseries_block(
-            value=real_power, block_check=cls._check_real_power_block)
+            value=forecast, block_check=cls._check_forecast_block)
         
     @classmethod
-    def _check_real_power_block(cls, real_power_block: TimeSeriesBlock) -> bool:
-        block_series = real_power_block.series
-        if len(block_series) != 1 or len(real_power_block.time_index) < 3:
+    def _check_forecast_block(cls, forecast_block: TimeSeriesBlock) -> bool:
+        block_series = forecast_block.series
+        if len(block_series) != 1 or len(forecast_block.time_index) < 2:
             return False
-        for real_power_series_name in cls.REAL_POWER_SERIES_NAMES:
-            if real_power_series_name not in block_series:
+        for forecast_series_name in cls.FORECAST_SERIES_NAMES:
+            if forecast_series_name not in block_series:
                 return False
-            current_series = block_series[real_power_series_name]
-            if current_series.unit_of_measure != cls.REAL_POWER_SERIES_UNIT or len(current_series.values) < 3:
+            current_series = block_series[forecast_series_name]
+            if current_series.unit_of_measure != cls.FORECAST_SERIES_UNIT or len(current_series.values) < 2:
                 return False
         return True
 
