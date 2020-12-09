@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 
-"""This module contains the message class for the simulation platform resource state messages."""
+"""This module contains the message class for the simulation platform resource forecast power messages."""
 
 from __future__ import annotations
 from typing import Any, Dict, Union
 
 from tools.exceptions.messages import MessageValueError
 from tools.message.abstract import AbstractResultMessage
-from tools.message.block import QuantityBlock
 from tools.message.block import TimeSeriesBlock
-from tools.message.block import ValueArrayBlock
 from tools.tools import FullLogger
 
 LOGGER = FullLogger(__name__)
