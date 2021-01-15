@@ -125,10 +125,10 @@ class TestResourceStateMessage(unittest.TestCase):
         # objects will not be equal
         different_values = {
             "bus": "foo",
-            "real_power": 200,
-            "reactive_power": 10,
+            "real_power": 200.0,
+            "reactive_power": 10.0,
             "node": 3,
-            "state_of_charge": 42
+            "state_of_charge": 42.0
         }
 
         for attr, value in different_values.items():
