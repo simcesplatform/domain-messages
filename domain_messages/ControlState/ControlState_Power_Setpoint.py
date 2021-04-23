@@ -7,7 +7,7 @@ from tools.messages import AbstractResultMessage
 
 class ControlStatePowerSetpointMessage(AbstractResultMessage):
     """Message class for setting all the attributes for ControlStatePowerSetpoint message """
-    CLASS_MESSAGE_TYPE = "ControlStatePowerSetpoint"
+    CLASS_MESSAGE_TYPE = "ControlState.PowerSetpoint"
     MESSAGE_TYPE_CHECK = True
     # Json attribute to class atribute mapping
     MESSAGE_ATTRIBUTES = {
