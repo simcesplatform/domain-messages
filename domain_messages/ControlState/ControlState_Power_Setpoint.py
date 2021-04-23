@@ -50,12 +50,12 @@ class ControlStatePowerSetpointMessage(AbstractResultMessage):
     @property
     def real_power(self) -> QuantityBlock:
         """The attribute for real power of the resource."""
-        return self.__real_power
+        return self.real_power
 
     @property
     def reactive_power(self) -> QuantityBlock:
         """The attribute for reactive power of the resource."""
-        return self.__reactive_power
+        return self.reactive_power
 
     # for each attributes added by this message type provide a property setter function to set the value of
     # the attribute the name of the properties must correspond to the names given in MESSAGE_ATTRIBUTES
@@ -109,7 +109,7 @@ class ControlStatePowerSetpointMessage(AbstractResultMessage):
         return cls._check_quantity_block(reactive_power, cls.QUANTITY_BLOCK_ATTRIBUTES_FULL['ReactivePower'])
 
     @classmethod
-    def from_json(cls, json_message: Dict[str, Any]) -> Optional[ControlStatePowerSetPointMessage]:
+    def from_json(cls, json_message: Dict[str, Any]) -> Optional[ControlStatePowerSetpointMessage]:
         """TODO: description for the from_json method"""
         try:
             message_object = cls(**json_message)
