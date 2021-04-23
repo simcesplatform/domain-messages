@@ -1,6 +1,6 @@
 from __future__ import annotations
-from typing import Any, Dict, Optional
-
+from typing import Any, Dict, Optional,Union
+from tools.message.block import QuantityBlock
 from tools.exceptions.messages import MessageError, MessageValueError
 from tools.messages import AbstractResultMessage
 
@@ -86,7 +86,7 @@ class ControlStatePowerSetpointMessage(AbstractResultMessage):
 
         raise MessageValueError("'{:s}' is an invalid value for reactive power.".format(str(reactive_power)))
 
-   def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: Any) -> bool:
         """Check that two ControlStatePowerSetpointMessage represent the same message."""
         return (
             super().__eq__(other) and
