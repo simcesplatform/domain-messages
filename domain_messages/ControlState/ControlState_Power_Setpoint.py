@@ -50,12 +50,12 @@ class ControlStatePowerSetpointMessage(AbstractResultMessage):
     @property
     def real_power(self) -> QuantityBlock:
         """The attribute for real power of the resource."""
-        return self.real_power
+        return self.__real_power
 
     @property
     def reactive_power(self) -> QuantityBlock:
         """The attribute for reactive power of the resource."""
-        return self.reactive_power
+        return self.__reactive_power
 
     # for each attributes added by this message type provide a property setter function to set the value of
     # the attribute the name of the properties must correspond to the names given in MESSAGE_ATTRIBUTES
