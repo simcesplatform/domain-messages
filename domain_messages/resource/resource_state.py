@@ -22,7 +22,7 @@ class ResourceStateMessage(AbstractResultMessage):
 
     # Mapping from message JSON attributes to class attributes
     MESSAGE_ATTRIBUTES = {
-        "Bus": "bus",
+        "CustomerId": "customerid",
         "RealPower": "real_power",
         "ReactivePower": "reactive_power",
         "Node": "node",
@@ -51,9 +51,9 @@ class ResourceStateMessage(AbstractResultMessage):
     ACCEPTED_NODE_VALUES = [1, 2, 3]
 
     @property
-    def bus(self) -> str:
-        """The attribute for the name of bus to which the resource is connected."""
-        return self.__bus
+    def customerid(self) -> str:
+        """The attribute for the name of customerid to which the resource is connected."""
+        return self.__customerid
 
     @property
     def real_power(self) -> QuantityBlock:
@@ -75,15 +75,15 @@ class ResourceStateMessage(AbstractResultMessage):
     def state_of_charge(self) -> Union[QuantityBlock, None]:
         """Present amount of energy stored, % of rated kWh. Unit of measure: "%"."""
         return self.__state_of_charge
-
-    @bus.setter
-    def bus(self, bus: str):
+    
+    @customerid.setter
+    def customerid(self, customerid: str):
         """Set value for bus."""
-        if self._check_bus(bus):
-            self.__bus = bus
+        if self._check_customerid(customerid):
+            self.__customerid = customerid
             return
 
-        raise MessageValueError(f"'{bus}' is an invalid value for bus since it is not a string.")
+        raise MessageValueError(f"'{customerid}' is an invalid value for customerid since it is not a string.")
 
     @real_power.setter
     def real_power(self, real_power: Union[str, float, QuantityBlock, Dict[str, Any]]):
@@ -143,7 +143,7 @@ class ResourceStateMessage(AbstractResultMessage):
         return (
             super().__eq__(other) and
             isinstance(other, ResourceStateMessage) and
-            self.bus == other.bus and
+            self.customerid == other.customerid and
             self.real_power == other.real_power and
             self.reactive_power == other.reactive_power and
             self.node == other.node and
@@ -151,9 +151,9 @@ class ResourceStateMessage(AbstractResultMessage):
         )
 
     @classmethod
-    def _check_bus(cls, bus: str) -> bool:
-        """Check that value for bus is valid i.e. a string."""
-        return isinstance(bus, str)
+    def _check_customerid(cls, customerid: str) -> bool:
+        """Check that value for customerid is valid i.e. a string."""
+        return isinstance(customerid, str)
 
     @classmethod
     def _check_real_power(cls, real_power: Union[str, float, QuantityBlock]) -> bool:
