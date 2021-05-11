@@ -74,12 +74,12 @@ class PriceForecastStateMessage(AbstractResultMessage):
         return self.__prices
 
     @property
-    def resourceid(self) -> str:
+    def resourceid(self) -> Union[str, None]:
         """The attribute for the id of the resource."""
         return self.__resourceid
 
     @property
-    def pricingtype(self) -> str:
+    def pricingtype(self) -> Union[str, None]:
         """The attribute for the type of price."""
         return self.__pricingtype
 
@@ -105,17 +105,23 @@ class PriceForecastStateMessage(AbstractResultMessage):
         raise MessageValueError("'{:s}' is an invalid value for prices.".format(str(prices)))
 
     @resourceid.setter
-    def resourceid(self, resourceid: str):
+    def resourceid(self, resourceid: Union[str, None]):
         """Set value for resource id."""
         if self._check_resourceid(resourceid):
-            self.__resourceid = resourceid
+            if resourceid is not None:
+                self.__resourceid = str(resourceid)
+            else:
+                self.__resourceid = resourceid
             return
 
     @pricingtype.setter
-    def pricingtype(self, pricingtype: str):
+    def pricingtype(self, pricingtype: Union[str, None]):
         """Set value for pricing type."""
         if self._check_pricingtype(pricingtype):
-            self.__pricingtype = pricingtype
+            if pricingtype is not None:
+                self.__pricingtype = str(pricingtype)
+            else:
+                self.__pricingtype = pricingtype
             return
 
 
@@ -141,14 +147,20 @@ class PriceForecastStateMessage(AbstractResultMessage):
         return cls._check_timeseries_block(prices, cls._check_prices_block)
 
     @classmethod
-    def _check_resourceid(cls, resourceid: str) -> bool:
+    def _check_resourceid(cls, resourceid: Union[str, None]) -> bool:
         """Check that value for resourceid is valid i.e. a string."""
-        return isinstance(resourceid, str)
+        if resourceid is None:
+            return True
+        else:
+            return isinstance(resourceid, str)
     
     @classmethod
-    def _check_pricingtype(cls, pricingtype: str) -> bool:
+    def _check_pricingtype(cls, pricingtype: Union[str, None]) -> bool:
         """Check that value for pricingtype is valid i.e. a string."""
-        return isinstance(pricingtype, str)
+        if pricingtype is None:
+            return True
+        else:
+            return isinstance(pricingtype, str)
 
     @classmethod
     def _check_prices_block(cls, prices_block: TimeSeriesBlock) -> bool:
