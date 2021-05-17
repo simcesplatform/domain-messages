@@ -3,7 +3,7 @@
 """This module contains the message class for the simulation platform request messages."""
 
 from __future__ import annotations
-from typing import Union, List, Dict, Any, Tuple
+from typing import Union, List, Dict, Any
 
 from tools.exceptions.messages import MessageValueError
 from tools.message.abstract import AbstractResultMessage
@@ -15,6 +15,24 @@ from tools.exceptions.messages import MessageDateError
 from tools.message.block import QuantityBlock
 
 LOGGER = FullLogger(__name__)
+
+# Example:
+# newMessage = RequestMessage(**{
+#     "Type": "Request",
+#     "SimulationId": to_iso_format_datetime_string(datetime.datetime.now()),
+#     "SourceProcessId": "source1",
+#     "MessageId": "messageid1",
+#     "EpochNumber": 1,
+#     "TriggeringMessageIds": ["messageid1.1","messageid1.2"],
+#     "ActivationTime": datetime.datetime.now(),
+#     "Duration": "1",
+#     "Direction": "downregulation",
+#     "RealPowerMin": 1.0,
+#     "RealPowerRequest": 2.0,
+#     "CustomerIds": "id1",
+#     "CongestionId": "congestionId1",
+#     "BidResolution": 0.1
+# })
 
 
 class RequestMessage(AbstractResultMessage):
@@ -40,12 +58,18 @@ class RequestMessage(AbstractResultMessage):
     # Values accepted for direction
     ALLOWED_DIRECTION_VALUES = ["upregulation", "downregulation"]
 
+    # Attribute names
+    ATTRIBUTE_DURATION = "Duration"
+    ATTRIBUTE_REALPOWERMIN = "RealPowerMin"
+    ATTRIBUTE_REALPOWERREQUEST = "RealPowerRequest"
+    ATTRIBURE_BIDRESOLUTION = "BidResolution"
+
     # attributes whose value should be a QuantityBlock and the expected unit of measure.
     QUANTITY_BLOCK_ATTRIBUTES = {
-        "Duration": "Minute",
-        "RealPowerMin": "kW",
-        "RealPowerRequest": "kW",
-        "BidResolution": "kW"
+        ATTRIBUTE_DURATION: "Minute",
+        ATTRIBUTE_REALPOWERMIN: "kW",
+        ATTRIBUTE_REALPOWERREQUEST: "kW",
+        ATTRIBURE_BIDRESOLUTION: "kW"
     }
 
     # attributes whose value should be a Array Block.
@@ -74,7 +98,10 @@ class RequestMessage(AbstractResultMessage):
 
     @property
     def activation_time(self) -> str:
-        """The activation time in ISO 8601 format"""
+        """
+        The activation time in ISO 8601 format.
+        Set as either a string or datetime.
+        """
         return self.__activation_time
 
     @activation_time.setter
@@ -93,25 +120,36 @@ class RequestMessage(AbstractResultMessage):
 
     @property
     def duration(self) -> QuantityBlock:
-        """The duration of the request"""
+        """
+        The duration of the request.
+        Set as a positive value. Units in minutes.
+        """
         return self.__duration
 
     @duration.setter
     def duration(self, duration: Union[str, float, int, Dict[str, Any], QuantityBlock]):
+        if type(duration) == int:
+            duration = float(duration)
         if self._check_duration(duration):
-            self._set_quantity_block_value('Duration', duration)
+            self._set_quantity_block_value(self.ATTRIBUTE_DURATION, duration)
             return
 
-        raise MessageValueError("'{:s}' is an invalid value for duration.".format(str(duration)))
+        raise MessageValueError("'{:s}' is an invalid value for {}.".format(str(duration),
+                                                                            self.ATTRIBUTE_DURATION))
 
     @classmethod
-    def _check_duration(cls, duration: Union[str, float, int, Dict, QuantityBlock]) -> bool:
-        return cls._check_quantity_block(duration, cls.QUANTITY_BLOCK_ATTRIBUTES_FULL["Duration"],
-                                         False, lambda value: value >= 0.0)
+    def _check_duration(cls, duration: Union[str, float, int, Dict[str, Any], QuantityBlock]) -> bool:
+        return cls._check_quantity_block(duration,
+                                         cls.QUANTITY_BLOCK_ATTRIBUTES_FULL[cls.ATTRIBUTE_DURATION],
+                                         False,
+                                         lambda value: value >= 0.0)
 
     @property
     def direction(self) -> str:
-        """The direction of the request"""
+        """
+        The direction of the request.
+        Value either "upregulation" or "downregulation".
+        """
         return self.__direction
 
     @direction.setter
@@ -134,16 +172,20 @@ class RequestMessage(AbstractResultMessage):
         return self.__real_power_min
 
     @real_power_min.setter
-    def real_power_min(self, real_power_min: Union[str, float, int, Dict, QuantityBlock]):
+    def real_power_min(self, real_power_min: Union[str, float, int, Dict[str, Any], QuantityBlock]):
+        if type(real_power_min) == int:
+            real_power_min = float(real_power_min)
         if self._check_real_power_min(real_power_min):
-            self._set_quantity_block_value('RealPowerMin', real_power_min)
+            self._set_quantity_block_value(self.ATTRIBUTE_REALPOWERMIN, real_power_min)
             return
 
-        raise MessageValueError("'{:s}' is an invalid value for RealPowerMin.".format(str(real_power_min)))
+        raise MessageValueError("'{:s}' is an invalid value for {}.".format(str(real_power_min),
+                                                                            self.ATTRIBUTE_REALPOWERMIN))
 
     @classmethod
-    def _check_real_power_min(cls, real_power_min: Union[str, float, int, Dict, QuantityBlock]) -> bool:
-        return cls._check_quantity_block(real_power_min, cls.QUANTITY_BLOCK_ATTRIBUTES_FULL["RealPowerMin"],
+    def _check_real_power_min(cls, real_power_min: Union[str, float, int, Dict[str, Any], QuantityBlock]) -> bool:
+        return cls._check_quantity_block(real_power_min,
+                                         cls.QUANTITY_BLOCK_ATTRIBUTES_FULL[cls.ATTRIBUTE_REALPOWERMIN],
                                          False, lambda value: value >= 0.0)
 
     @property
@@ -152,17 +194,22 @@ class RequestMessage(AbstractResultMessage):
         return self.__real_power_request
 
     @real_power_request.setter
-    def real_power_request(self, real_power_request: Union[str, float, int, Dict, QuantityBlock]):
+    def real_power_request(self, real_power_request: Union[str, float, int, Dict[str, Any], QuantityBlock]):
+        if type(real_power_request) == int:
+            real_power_request = float(real_power_request)
         if self._check_real_power_request(real_power_request):
-            self._set_quantity_block_value('RealPowerRequest', real_power_request)
+            self._set_quantity_block_value(self.ATTRIBUTE_REALPOWERREQUEST, real_power_request)
             return
 
-        raise MessageValueError("'{:s}' is an invalid value for RealPowerRequest.".format(str(real_power_request)))
+        raise MessageValueError("'{:s}' is an invalid value for {}.".format(str(real_power_request),
+                                                                            self.ATTRIBUTE_REALPOWERREQUEST))
 
     @classmethod
-    def _check_real_power_request(cls, real_power_request: Union[str, float, int, Dict, QuantityBlock]) -> bool:
-        return cls._check_quantity_block(real_power_request, cls.QUANTITY_BLOCK_ATTRIBUTES_FULL["RealPowerRequest"],
-                                         False, lambda value: value >= 0.0)
+    def _check_real_power_request(cls, real_power_request: Union[str, float, int, Dict[str, Any], QuantityBlock]) -> bool:
+        return cls._check_quantity_block(real_power_request,
+                                         cls.QUANTITY_BLOCK_ATTRIBUTES_FULL[cls.ATTRIBUTE_REALPOWERREQUEST],
+                                         False,
+                                         lambda value: value >= 0.0)
 
     @property
     def customer_ids(self) -> List[str]:
@@ -170,17 +217,21 @@ class RequestMessage(AbstractResultMessage):
         return self.__customer_ids
 
     @customer_ids.setter
-    def customer_ids(self, customer_ids: Union[str, List[str], Tuple[str]]):
+    def customer_ids(self, customer_ids: Union[str, List[str]]):
         if self._check_customer_ids(customer_ids):
-            self.__customer_ids = list(customer_ids)
+            if type(customer_ids) == str:
+                self.__customer_ids = list()
+                self.__customer_ids.append(customer_ids)
+            else:
+                self.__customer_ids = list(customer_ids)
             return
 
         MessageValueError("'{:s}' is an invalid value for CustomerIds.".format(str(customer_ids)))
 
     @classmethod
-    def _check_customer_ids(cls, customer_ids: Union[str, List[str], Tuple[str]]) -> bool:
+    def _check_customer_ids(cls, customer_ids: Union[str, List[str]]) -> bool:
         if (customer_ids is None or
-                not isinstance(customer_ids, (str, list, tuple)) or
+                not isinstance(customer_ids, (str, list)) or
                 len(customer_ids) == 0):
             return False
         if not isinstance(customer_ids, str):
@@ -204,7 +255,7 @@ class RequestMessage(AbstractResultMessage):
 
     @classmethod
     def _check_congestion_id(cls, congestion_id: str) -> bool:
-        return isinstance(congestion_id, str)
+        return isinstance(congestion_id, str) and len(congestion_id) > 0
 
     @property
     def bid_resolution(self) -> QuantityBlock:
@@ -212,21 +263,26 @@ class RequestMessage(AbstractResultMessage):
         return self.__bid_resolution
 
     @bid_resolution.setter
-    def bid_resolution(self, bid_resolution: Union[str, float, int, Dict, QuantityBlock, None]):
+    def bid_resolution(self, bid_resolution: Union[str, float, int, Dict[str, Any], QuantityBlock, None]):
+        if type(bid_resolution) == int:
+            bid_resolution = float(bid_resolution)
         if self._check_bid_resolution(bid_resolution):
             if bid_resolution is None:
                 self.__bid_resolution = None
                 return
-            self._set_quantity_block_value('BidResolution', bid_resolution)
+            self._set_quantity_block_value(self.ATTRIBURE_BIDRESOLUTION, bid_resolution)
             return
 
-        raise MessageValueError("'{:s}' is an invalid value for BidResolution.".format(str(bid_resolution)))
+        raise MessageValueError("'{:s}' is an invalid value for {}.".format(str(bid_resolution),
+                                                                            self.ATTRIBURE_BIDRESOLUTION))
 
     @classmethod
-    def _check_bid_resolution(cls, bid_resolution: Union[str, float, int, Dict, QuantityBlock, None]) -> bool:
+    def _check_bid_resolution(cls, bid_resolution: Union[str, float, int, Dict[str, Any], QuantityBlock, None]) -> bool:
         return bid_resolution is None or \
-               cls._check_quantity_block(bid_resolution, cls.QUANTITY_BLOCK_ATTRIBUTES_FULL["BidResolution"],
-                                         True, lambda value: value >= 0.0)
+               cls._check_quantity_block(bid_resolution,
+                                         cls.QUANTITY_BLOCK_ATTRIBUTES_FULL[cls.ATTRIBURE_BIDRESOLUTION],
+                                         True,
+                                         lambda value: value >= 0.0)
 
     @classmethod
     def from_json(cls, json_message: Dict[str, Any]) -> Union[RequestMessage, None]:
