@@ -1,0 +1,1 @@
+from domain_messages.InitCISCustomerInfo.initciscustomerinfo import InitCISCustomerInfoMessage

@@ -113,6 +113,21 @@ class LFMMarketResultMessage(AbstractResultMessage):
         TIMESERIES_BLOCK_ATTRIBUTES
     )
 
+    def __eq__(self, other: Any) -> bool:
+        """Check that two LFMMarketResultMessages represent the same message."""
+        return (
+            super().__eq__(other) and
+            isinstance(other, LFMMarketResultMessage) and
+            self.activation_time == other.activation_time and
+            self.duration == other.duration and
+            self.direction == other.direction and
+            self.real_power == other.real_power and
+            self.price == other.price and
+            self.congestion_id == other.congestion_id and
+            self.offer_id == other.offer_id and
+            self.result_count == other.result_count
+        )
+
     @property
     def activation_time(self) -> str:
         """The activation time in ISO 8601 format"""

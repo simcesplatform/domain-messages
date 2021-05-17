@@ -96,6 +96,21 @@ class RequestMessage(AbstractResultMessage):
         TIMESERIES_BLOCK_ATTRIBUTES
     )
 
+    def __eq__(self, other: Any) -> bool:
+        """Check that two RequestMessages represent the same message."""
+        return (
+            super().__eq__(other) and
+            isinstance(other, RequestMessage) and
+            self.activation_time == other.activation_time and
+            self.duration == other.duration and
+            self.direction == other.direction and
+            self.real_power_min == other.real_power_min and
+            self.real_power_request == other.real_power_request and
+            self.customer_ids == other.customer_ids and
+            self.congestion_id == other.congestion_id and
+            self.bid_resolution == other.bid_resolution
+        )
+
     @property
     def activation_time(self) -> str:
         """
