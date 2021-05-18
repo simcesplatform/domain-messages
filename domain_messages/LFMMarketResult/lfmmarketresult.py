@@ -11,7 +11,6 @@ from tools.tools import FullLogger
 
 import datetime
 from tools.datetime_tools import to_iso_format_datetime_string
-from tools.exceptions.messages import MessageDateError
 from tools.message.block import QuantityBlock, TimeSeriesBlock
 
 LOGGER = FullLogger(__name__)
@@ -144,7 +143,7 @@ class LFMMarketResultMessage(AbstractResultMessage):
                 self.__activation_time = iso_format_string
                 return
 
-        raise MessageDateError("'{:s}' is an invalid ActivationTime".format(str(activation_time)))
+        raise MessageValueError("'{:s}' is an invalid ActivationTime".format(str(activation_time)))
 
     @classmethod
     def _check_activation_time(cls, activation_time: Union[str, datetime.datetime]) -> bool:

@@ -11,7 +11,6 @@ from tools.tools import FullLogger
 
 import datetime
 from tools.datetime_tools import to_iso_format_datetime_string
-from tools.exceptions.messages import MessageDateError
 from tools.message.block import QuantityBlock
 
 LOGGER = FullLogger(__name__)
@@ -127,7 +126,7 @@ class RequestMessage(AbstractResultMessage):
                 self.__activation_time = iso_format_string
                 return
 
-        raise MessageDateError("'{:s}' is an invalid datetime".format(str(activation_time)))
+        raise MessageValueError("'{:s}' is an invalid datetime".format(str(activation_time)))
 
     @classmethod
     def _check_activation_time(cls, activation_time: Union[str, datetime.datetime]) -> bool:
@@ -241,10 +240,12 @@ class RequestMessage(AbstractResultMessage):
                 self.__customer_ids = list(customer_ids)
             return
 
-        MessageValueError("'{:s}' is an invalid value for CustomerIds.".format(str(customer_ids)))
+        raise MessageValueError("'{:s}' is an invalid value for CustomerIds.".format(str(customer_ids)))
 
     @classmethod
     def _check_customer_ids(cls, customer_ids: Union[str, List[str]]) -> bool:
+        if customer_ids is None:
+            return False
         if (customer_ids is None or
                 not isinstance(customer_ids, (str, list)) or
                 len(customer_ids) == 0):

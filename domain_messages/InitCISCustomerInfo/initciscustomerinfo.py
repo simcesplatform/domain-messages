@@ -11,6 +11,21 @@ from tools.tools import FullLogger
 
 LOGGER = FullLogger(__name__)
 
+# Example:
+# newMessage3 = InitCISCustomerInfoMessage(**{
+#         "Type": "Init.CIS.CustomerInfo",
+#         "SimulationId": to_iso_format_datetime_string(datetime.datetime.now()),
+#         "SourceProcessId": "source1",
+#         "MessageId": "messageid1",
+#         "EpochNumber": 1,
+#         "TriggeringMessageIds": ["messageid1.1", "messageid1.2"],
+#         "ResourceId": ["res1", "res2"],
+#         "CustomerId": ["cus1", "cus2"],
+#         "BusName": ["bus1", ""]
+#     })
+#
+# NOTE: The length of the lists is not checked. All should be of same length.
+
 
 class InitCISCustomerInfoMessage(AbstractResultMessage):
     """Class containing all the attributes for an Init.CIS.CustomerInfo message."""
