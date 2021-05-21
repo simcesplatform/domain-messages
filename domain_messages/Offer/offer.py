@@ -129,6 +129,9 @@ class OfferMessage(AbstractResultMessage):
 
     @activation_time.setter
     def activation_time(self, activation_time: Union[str, datetime.datetime]):
+        if activation_time is None:
+            self.__activation_time = activation_time
+            return
         if self._check_activation_time(activation_time):
             iso_format_string = to_iso_format_datetime_string(activation_time)
             if isinstance(iso_format_string, str):
@@ -161,7 +164,7 @@ class OfferMessage(AbstractResultMessage):
     def _check_duration(cls, duration: Union[str, float, int, Dict[str, Any], QuantityBlock]) -> bool:
         return cls._check_quantity_block(value=duration,
                                          unit=cls.QUANTITY_BLOCK_ATTRIBUTES_FULL[cls.ATTRIBUTE_DURATION],
-                                         can_be_none=False,
+                                         can_be_none=True,
                                          float_value_check=lambda value: value >= 0.0)
 
     @property
@@ -179,7 +182,8 @@ class OfferMessage(AbstractResultMessage):
 
     @classmethod
     def _check_direction(cls, direction: str) -> bool:
-        if isinstance(direction, str) and direction in cls.ALLOWED_DIRECTION_VALUES:
+        if direction is None or \
+                (isinstance(direction, str) and direction in cls.ALLOWED_DIRECTION_VALUES):
             return True
         return False
 
@@ -200,7 +204,7 @@ class OfferMessage(AbstractResultMessage):
     @classmethod
     def _check_real_power(cls, real_power: Union[TimeSeriesBlock, Dict[str, Any]]) -> bool:
         return cls._check_timeseries_block(value=real_power,
-                                           can_be_none=False,
+                                           can_be_none=True,
                                            block_check=cls._check_real_power_block)
 
     @classmethod
@@ -247,11 +251,11 @@ class OfferMessage(AbstractResultMessage):
                 return False
             return cls._check_quantity_block(value=price.value,
                                              unit=price.unit_of_measure,
-                                             can_be_none=False,
+                                             can_be_none=True,
                                              float_value_check=lambda value: value >= 0.0)
         return cls._check_quantity_block(value=price,
                                          unit=cls.ALLOWED_PRICE_UNITS[0],
-                                         can_be_none=False,
+                                         can_be_none=True,
                                          float_value_check=lambda value: value >= 0.0)
 
     @property
@@ -286,7 +290,7 @@ class OfferMessage(AbstractResultMessage):
 
     @classmethod
     def _check_offer_id(cls, offer_id: str) -> bool:
-        return isinstance(offer_id, str) and len(offer_id) > 0
+        return offer_id is None or (isinstance(offer_id, str) and len(offer_id) > 0)
 
     @property
     def offer_count(self) -> int:
