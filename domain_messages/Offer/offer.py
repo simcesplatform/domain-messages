@@ -3,7 +3,7 @@
 """This module contains the message class for the simulation platform offer messages."""
 
 from __future__ import annotations
-from typing import Union, Dict, Any
+from typing import Union, Dict, Any, List
 
 from tools.exceptions.messages import MessageValueError
 from tools.message.abstract import AbstractResultMessage
@@ -22,7 +22,7 @@ LOGGER = FullLogger(__name__)
 # time_index_list = [to_iso_format_datetime_string(time_tmp),
 #                    to_iso_format_datetime_string(time_tmp + datetime.timedelta(hours=1))]
 # time_series_block_tmp = TimeSeriesBlock(time_index_list,
-#                                         {"customer1": ValueArrayBlock([2.0, 3.0],
+#                                         {"Regulation": ValueArrayBlock([2.0, 3.0],
 #                                                                       "kW")})
 #
 # newMessage2 = OfferMessage(**{
@@ -39,7 +39,8 @@ LOGGER = FullLogger(__name__)
 #     "Price": 2.0,
 #     "CongestionId": "congestionId1",
 #     "OfferId": "offerid1",
-#     "OfferCount": 1
+#     "OfferCount": 1,
+#     "CustomerIds": [ "Customer1", "Customer2" ]
 # })
 
 
@@ -59,7 +60,8 @@ class OfferMessage(AbstractResultMessage):
         "Price": "price",
         "CongestionId": "congestion_id",
         "OfferId": "offer_id",
-        "OfferCount": "offer_count"
+        "OfferCount": "offer_count",
+        "CustomerIds": "customerids"
     }
     OPTIONAL_ATTRIBUTES = []
 
@@ -119,7 +121,8 @@ class OfferMessage(AbstractResultMessage):
             self.price == other.price and
             self.congestion_id == other.congestion_id and
             self.offer_id == other.offer_id and
-            self.offer_count == other.offer_count
+            self.offer_count == other.offer_count and
+            self.customerids == other.customerids
         )
 
     @property
@@ -306,7 +309,7 @@ class OfferMessage(AbstractResultMessage):
             self.__offer_count = int(offer_count)
             return
 
-        raise MessageValueError("'{:s}' is an invalid value for OfferCount".format(offer_count))
+        raise MessageValueError("'{:s}' is an invalid value for OfferCount".format(str(offer_count)))
 
     @classmethod
     def _check_offer_count(cls, offer_count: Union[str, float, int]) -> bool:
@@ -317,6 +320,28 @@ class OfferMessage(AbstractResultMessage):
             return False
         if float(offer_count).is_integer() and int(offer_count) >= 0:
             return True
+        return False
+
+    @property
+    def customerids(self) -> List[str]:
+        return self.__customerids
+
+    @customerids.setter
+    def customerids(self, customerids: List[str]):
+        if self._check_customerids(customerids):
+            self.__customerids = list(customerids)
+            return
+
+        raise MessageValueError("'{:s}' is an invalid value for CustomerIds".format(str(customerids)))
+
+    @classmethod
+    def _check_customerids(cls, customerids) -> bool:
+        if isinstance(customerids, list):
+            if len(customerids) > 0:
+                for customer in customerids:
+                    if not isinstance(customer, str):
+                        return False
+                return True
         return False
 
     @classmethod
