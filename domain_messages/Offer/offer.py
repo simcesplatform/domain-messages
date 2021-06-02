@@ -68,9 +68,7 @@ class OfferMessage(AbstractResultMessage):
     # Values accepted for direction
     ALLOWED_DIRECTION_VALUES = ["upregulation", "downregulation"]
     # Units accepted for price
-    ALLOWED_PRICE_UNITS = ["{EUR}/(kW.h)", "{EUR}/(MW.h)"]
-    # ( Defaults to EUR/kW.h (Defaults to first value in this list) )
-    # ( Anything else should be given as a QuantityBlock )
+    ALLOWED_PRICE_UNIT = "EUR"
     # RealPower units:
     REAL_POWER_UNIT = "kW"
 
@@ -82,7 +80,7 @@ class OfferMessage(AbstractResultMessage):
     # attributes whose value should be a QuantityBlock and the expected unit of measure.
     QUANTITY_BLOCK_ATTRIBUTES = {
         ATTRIBUTE_DURATION: "Minute",
-        ATTRIBUTE_PRICE: "{EUR}/(kW.h)"
+        ATTRIBUTE_PRICE: "EUR"
     }
 
     # attributes whose value should be a Array Block.
@@ -224,8 +222,7 @@ class OfferMessage(AbstractResultMessage):
     def price(self) -> QuantityBlock:
         """
         Price of the offered regulation.
-        Units EUR/kWh (Or EUR/MWh)
-        ( If EUR/MWh has to be given as QuantityBlock )
+        Units EUR
         """
         return self.__price
 
@@ -250,14 +247,14 @@ class OfferMessage(AbstractResultMessage):
     @classmethod
     def _check_price(cls, price) -> bool:
         if isinstance(price, QuantityBlock):
-            if price.unit_of_measure not in cls.ALLOWED_PRICE_UNITS:
+            if price.unit_of_measure is not cls.ALLOWED_PRICE_UNIT:
                 return False
             return cls._check_quantity_block(value=price.value,
                                              unit=price.unit_of_measure,
                                              can_be_none=True,
                                              float_value_check=lambda value: value >= 0.0)
         return cls._check_quantity_block(value=price,
-                                         unit=cls.ALLOWED_PRICE_UNITS[0],
+                                         unit=cls.ALLOWED_PRICE_UNIT,
                                          can_be_none=True,
                                          float_value_check=lambda value: value >= 0.0)
 
