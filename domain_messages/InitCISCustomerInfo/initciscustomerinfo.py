@@ -96,7 +96,7 @@ class InitCISCustomerInfoMessage(AbstractResultMessage):
         if not isinstance(resource_id_list, list):
             return False
         for resource in resource_id_list:
-            if not  isinstance(resource, str):
+            if not isinstance(resource, str):
                 return False
             if len(resource) < 1:
                 return False

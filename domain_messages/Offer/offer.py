@@ -124,12 +124,12 @@ class OfferMessage(AbstractResultMessage):
         )
 
     @property
-    def activation_time(self) -> str:
+    def activation_time(self) -> Union[str, None]:
         """The activation time in ISO 8601 format"""
         return self.__activation_time
 
     @activation_time.setter
-    def activation_time(self, activation_time: Union[str, datetime.datetime]):
+    def activation_time(self, activation_time: Union[None, str, datetime.datetime]):
         if activation_time is None:
             self.__activation_time = activation_time
             return
@@ -142,39 +142,41 @@ class OfferMessage(AbstractResultMessage):
         raise MessageValueError("'{:s}' is an invalid ActivationTime".format(str(activation_time)))
 
     @classmethod
-    def _check_activation_time(cls, activation_time: Union[str, datetime.datetime]) -> bool:
-        return cls._check_datetime(activation_time)
+    def _check_activation_time(cls, activation_time: Union[None, str, datetime.datetime]) -> bool:
+        return activation_time is None or cls._check_datetime(activation_time)
 
     @property
-    def duration(self) -> QuantityBlock:
+    def duration(self) -> Union[QuantityBlock, None]:
         """The duration of the request"""
         return self.__duration
 
     @duration.setter
-    def duration(self, duration: Union[str, float, int, Dict[str, Any], QuantityBlock]):
-        if type(duration) == int:
+    def duration(self, duration: Union[str, float, int, Dict[str, Any], QuantityBlock, None]):
+        if isinstance(duration, int):
             duration = float(duration)
         if self._check_duration(duration):
             self._set_quantity_block_value(self.ATTRIBUTE_DURATION, duration)
             return
 
-        raise MessageValueError("'{:s}' is an invalid value for {}.".format(str(duration),
-                                                                            self.ATTRIBUTE_DURATION))
+        raise MessageValueError("'{:s}' is an invalid value for {}.".format(
+            str(duration), self.ATTRIBUTE_DURATION))
 
     @classmethod
-    def _check_duration(cls, duration: Union[str, float, int, Dict[str, Any], QuantityBlock]) -> bool:
-        return cls._check_quantity_block(value=duration,
-                                         unit=cls.QUANTITY_BLOCK_ATTRIBUTES_FULL[cls.ATTRIBUTE_DURATION],
-                                         can_be_none=True,
-                                         float_value_check=lambda value: value >= 0.0)
+    def _check_duration(cls, duration: Union[str, float, int, Dict[str, Any], QuantityBlock, None]) -> bool:
+        return cls._check_quantity_block(
+            value=duration,
+            unit=cls.QUANTITY_BLOCK_ATTRIBUTES_FULL[cls.ATTRIBUTE_DURATION],
+            can_be_none=True,
+            float_value_check=lambda value: value >= 0.0
+        )
 
     @property
-    def direction(self) -> str:
+    def direction(self) -> Union[str, None]:
         """The direction of the request"""
         return self.__direction
 
     @direction.setter
-    def direction(self, direction: str):
+    def direction(self, direction: Union[str, None]):
         if self._check_direction(direction):
             self.__direction = direction
             return
@@ -182,19 +184,18 @@ class OfferMessage(AbstractResultMessage):
         raise MessageValueError("'{:s}' is an invalid value for Direction".format(str(direction)))
 
     @classmethod
-    def _check_direction(cls, direction: str) -> bool:
-        if direction is None or \
-                (isinstance(direction, str) and direction in cls.ALLOWED_DIRECTION_VALUES):
+    def _check_direction(cls, direction: Union[str, None]) -> bool:
+        if direction is None or (isinstance(direction, str) and direction in cls.ALLOWED_DIRECTION_VALUES):
             return True
         return False
 
     @property
-    def real_power(self) -> TimeSeriesBlock:
+    def real_power(self) -> Union[TimeSeriesBlock, None]:
         """Offered regulation as a TimeSeriesBlock"""
         return self.__real_power
 
     @real_power.setter
-    def real_power(self, real_power: Union[TimeSeriesBlock, Dict[str, Any]]):
+    def real_power(self, real_power: Union[TimeSeriesBlock, Dict[str, Any], None]):
         if self._check_real_power(real_power):
             self._set_timeseries_block_value(self.ATTRIBUTE_REALPOWER, real_power)
             return
@@ -203,7 +204,7 @@ class OfferMessage(AbstractResultMessage):
                                                                            self.ATTRIBUTE_REALPOWER))
 
     @classmethod
-    def _check_real_power(cls, real_power: Union[TimeSeriesBlock, Dict[str, Any]]) -> bool:
+    def _check_real_power(cls, real_power: Union[TimeSeriesBlock, Dict[str, Any], None]) -> bool:
         return cls._check_timeseries_block(value=real_power,
                                            can_be_none=True,
                                            block_check=cls._check_real_power_block)
@@ -219,7 +220,7 @@ class OfferMessage(AbstractResultMessage):
         return True
 
     @property
-    def price(self) -> QuantityBlock:
+    def price(self) -> Union[QuantityBlock, None]:
         """
         Price of the offered regulation.
         Units EUR
@@ -227,18 +228,18 @@ class OfferMessage(AbstractResultMessage):
         return self.__price
 
     @price.setter
-    def price(self, price: Union[str, float, int, QuantityBlock]):
+    def price(self, price: Union[str, float, int, QuantityBlock, None]):
         """
         Sets the price for the offer. Sets the input price to a QuantityBlock.
         If the price is given as a QuantityBlock, uses its unit of measure.
         """
-        if type(price) == int:
+        if isinstance(price, int):
             price = float(price)
         if self._check_price(price):
             self._set_quantity_block_value(message_attribute=self.ATTRIBUTE_PRICE,
                                            quantity_value=price)
-            if isinstance(price, QuantityBlock):
-                self.price.unit_of_measure = price.unit_of_measure
+            if isinstance(price, QuantityBlock) and isinstance(self.__price, QuantityBlock):
+                self.__price.unit_of_measure = price.unit_of_measure
             return
 
         raise MessageValueError("'{:s}' is an invalid value for {}".format(str(price),
@@ -259,12 +260,12 @@ class OfferMessage(AbstractResultMessage):
                                          float_value_check=lambda value: value >= 0.0)
 
     @property
-    def congestion_id(self) -> str:
+    def congestion_id(self) -> Union[str, None]:
         """Identifier for the congestion area / specific congestion problem"""
         return self.__congestion_id
 
     @congestion_id.setter
-    def congestion_id(self, congestion_id: str):
+    def congestion_id(self, congestion_id: Union[str, None]):
         if self._check_congestion_id(congestion_id):
             self.__congestion_id = congestion_id
             return
@@ -272,16 +273,16 @@ class OfferMessage(AbstractResultMessage):
         raise MessageValueError("'{:s}' is an invalid value for CongestionId".format(str(congestion_id)))
 
     @classmethod
-    def _check_congestion_id(cls, congestion_id: str) -> bool:
-        return isinstance(congestion_id, str) and len(congestion_id) > 0
+    def _check_congestion_id(cls, congestion_id: Union[str, None]) -> bool:
+        return congestion_id is None or (isinstance(congestion_id, str) and len(congestion_id) > 0)
 
     @property
-    def offer_id(self) -> str:
+    def offer_id(self) -> Union[str, None]:
         """Identifier for this specific offer"""
         return self.__offer_id
 
     @offer_id.setter
-    def offer_id(self, offer_id: str):
+    def offer_id(self, offer_id: Union[str, None]):
         if self._check_offer_id(offer_id):
             self.__offer_id = offer_id
             return
@@ -289,7 +290,7 @@ class OfferMessage(AbstractResultMessage):
         raise MessageValueError("'{:s}' is an invalid value for OfferId".format(str(offer_id)))
 
     @classmethod
-    def _check_offer_id(cls, offer_id: str) -> bool:
+    def _check_offer_id(cls, offer_id: Union[str, None]) -> bool:
         return offer_id is None or (isinstance(offer_id, str) and len(offer_id) > 0)
 
     @property
@@ -310,29 +311,31 @@ class OfferMessage(AbstractResultMessage):
 
     @classmethod
     def _check_offer_count(cls, offer_count: Union[str, float, int]) -> bool:
-        if offer_count is None or \
-                not (isinstance(offer_count, str) or
-                     isinstance(offer_count, float) or
-                     isinstance(offer_count, int)):
+        if offer_count is None or not isinstance(offer_count, (str, float, int)):
             return False
-        if float(offer_count).is_integer() and int(offer_count) >= 0:
-            return True
-        return False
+        if isinstance(offer_count, str):
+            try:
+                offer_count = float(offer_count)
+            except ValueError:
+                return False
+        return offer_count >= 0 and (isinstance(offer_count, int) or offer_count.is_integer())
 
     @property
-    def customerids(self) -> List[str]:
+    def customerids(self) -> Union[List[str], None]:
         return self.__customerids
 
     @customerids.setter
-    def customerids(self, customerids: List[str]):
+    def customerids(self, customerids: Union[List[str], None]):
         if self._check_customerids(customerids):
-            self.__customerids = list(customerids)
+            self.__customerids = customerids
             return
 
         raise MessageValueError("'{:s}' is an invalid value for CustomerIds".format(str(customerids)))
 
     @classmethod
-    def _check_customerids(cls, customerids) -> bool:
+    def _check_customerids(cls, customerids: Union[List[str], None]) -> bool:
+        if customerids is None:
+            return True
         if isinstance(customerids, list):
             if len(customerids) > 0:
                 for customer in customerids:
