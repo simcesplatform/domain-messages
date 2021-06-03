@@ -106,7 +106,7 @@ class ResourceStateMessage(AbstractResultMessage):
         Raises MessageValueError if value is missing or invalid: a QuantityBlock has the wrong unit, dict cannot be converted  or
         a string cannot be converted to float"""
         if self._check_reactive_power(reactive_power):
-            self._set_quantity_block_value('ReactivePower', reactive_power )
+            self._set_quantity_block_value('ReactivePower', reactive_power)
             return
 
         raise MessageValueError("'{:s}' is an invalid value for reactive power.".format(str(reactive_power)))
@@ -118,8 +118,8 @@ class ResourceStateMessage(AbstractResultMessage):
         A dict is converted into a QuantityBlock.
         Raises MessageValueError if value is missing or invalid: a QuantityBlock has the wrong unit, dict cannot be converted  or
         a string cannot be converted to float"""
-        if self._check_state_of_charge( state_of_charge ):
-            self._set_quantity_block_value("StateOfCharge", state_of_charge )
+        if self._check_state_of_charge(state_of_charge):
+            self._set_quantity_block_value("StateOfCharge", state_of_charge)
             return
 
         raise MessageValueError("'{:s}' is an invalid value for state of charge.".format(str(state_of_charge)))
@@ -168,7 +168,12 @@ class ResourceStateMessage(AbstractResultMessage):
     @classmethod
     def _check_state_of_charge(cls, state_of_charge: Union[str, float, QuantityBlock, None]) -> bool:
         """Check that value for state of charge is valid which includes checking that it is between 0 and 100."""
-        return cls._check_quantity_block(state_of_charge, cls.QUANTITY_BLOCK_ATTRIBUTES_FULL['StateOfCharge'], True, lambda value: value >= 0.0 and value <= 100.0 )
+        return cls._check_quantity_block(
+            state_of_charge,
+            cls.QUANTITY_BLOCK_ATTRIBUTES_FULL['StateOfCharge'],
+            True,
+            lambda value: value >= 0.0 and value <= 100.0
+        )
 
     @classmethod
     def _check_node(cls, node: Union[int, None]) -> bool:
