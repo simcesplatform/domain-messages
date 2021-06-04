@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Dict, Optional,Union
+from typing import Any, Dict, Optional, Union
 from tools.message.block import QuantityBlock
 from tools.exceptions.messages import MessageError, MessageValueError
 from tools.messages import AbstractResultMessage
@@ -9,7 +9,7 @@ class ControlStatePowerSetpointMessage(AbstractResultMessage):
     """Message class for setting all the attributes for ControlStatePowerSetpoint message """
     CLASS_MESSAGE_TYPE = "ControlState.PowerSetpoint"
     MESSAGE_TYPE_CHECK = True
-    # Json attribute to class atribute mapping
+    # Json attribute to class attribute mapping
     MESSAGE_ATTRIBUTES = {
         "RealPower": "real_power",
         "ReactivePower": "reactive_power"
@@ -18,9 +18,10 @@ class ControlStatePowerSetpointMessage(AbstractResultMessage):
     OPTIONAL_ATTRIBUTES = []
 
     # The quantity block attributes is listed here
-    QUANTITY_BLOCK_ATTRIBUTES = {"RealPower": "kW",
+    QUANTITY_BLOCK_ATTRIBUTES = {
+        "RealPower": "kW",
         "ReactivePower": "kV.A{r}"
-}
+    }
 
     # Message class containing quantity array block is listed here
     QUANTITY_ARRAY_BLOCK_ATTRIBUTES = {}
@@ -46,7 +47,6 @@ class ControlStatePowerSetpointMessage(AbstractResultMessage):
         TIMESERIES_BLOCK_ATTRIBUTES
     )
 
-    
     @property
     def real_power(self) -> QuantityBlock:
         """The attribute for real power of the resource."""
@@ -81,7 +81,7 @@ class ControlStatePowerSetpointMessage(AbstractResultMessage):
         Raises MessageValueError if value is missing or invalid: a QuantityBlock has the wrong unit, dict cannot be converted  or
         a string cannot be converted to float"""
         if self._check_reactive_power(reactive_power):
-            self._set_quantity_block_value('ReactivePower', reactive_power )
+            self._set_quantity_block_value('ReactivePower', reactive_power)
             return
 
         raise MessageValueError("'{:s}' is an invalid value for reactive power.".format(str(reactive_power)))
@@ -91,10 +91,9 @@ class ControlStatePowerSetpointMessage(AbstractResultMessage):
         return (
             super().__eq__(other) and
             isinstance(other, ControlStatePowerSetpointMessage) and
-            # self.resourceid == other.resourc_eid and
-            self.real_power== other.real_power and
+            self.real_power == other.real_power and
             self.reactive_power == other.reactive_power
-            )
+        )
 
     # Provide a class method for each attribute added by this message type to check if the value is acceptable
     # These should return True only when the given parameter corresponds to an acceptable value for the attribute

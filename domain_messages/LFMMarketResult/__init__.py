@@ -1,0 +1,1 @@
+from domain_messages.LFMMarketResult.lfmmarketresult import LFMMarketResultMessage
