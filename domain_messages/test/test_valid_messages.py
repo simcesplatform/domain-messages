@@ -289,7 +289,7 @@ class TestValidMessages(unittest.TestCase):
 
     def test_resource_state_message(self):
         """Test creation of ResourceStateMessage with valid parameters."""
-        bus = "loadbus1"
+        customerid = "customer1"
         real_power = QuantityBlock(Value=100.0, UnitOfMeasure="kW")
         reactive_power = QuantityBlock(Value=0.0, UnitOfMeasure="kV.A{r}")
         node = 2
@@ -299,7 +299,7 @@ class TestValidMessages(unittest.TestCase):
             ResourceStateMessage,
             EpochNumber=EPOCH_NUMBER,
             TriggeringMessageIds=TRIGGERING_MESSAGE_IDS,
-            Bus=bus,
+            CustomerId=customerid,
             RealPower=real_power,
             ReactivePower=reactive_power,
             Node=node,
@@ -310,7 +310,7 @@ class TestValidMessages(unittest.TestCase):
         self.assertIsInstance(message, ResourceStateMessage)
         if isinstance(message, ResourceStateMessage):
             self.assertEqual(message.message_type, "ResourceState")
-            self.assertEqual(message.bus, bus)
+            self.assertEqual(message.customerid, customerid)
             self.assertEqual(message.real_power, real_power)
             self.assertEqual(message.reactive_power, reactive_power)
             self.assertEqual(message.node, node)
