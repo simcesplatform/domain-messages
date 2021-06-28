@@ -13,13 +13,14 @@ from tools.exceptions.messages import MessageValueError
 from tools.tests.messages_common import DEFAULT_TYPE, FULL_JSON, DEFAULT_TIMESTAMP
 
 # define some test data
-BUS_ATTRIBUTE = "Bus"
+CUSTOMERID_ATTRIBUTE = "CustomerId"
+#BUS_ATTRIBUTE = "Bus"
 REAL_POWER_ATTRIBUTE = "RealPower"
 REACTIVE_POWER_ATTRIBUTE = "ReactivePower"
 NODE_ATTRIBUTE = "Node"
 STATE_OF_CHARGE_ATTRIBUTE = "StateOfCharge"
 
-DEFAULT_BUS = "bus"
+DEFAULT_CUSTOMERID = "customerid"
 DEFAULT_REACTIVE_POWER = {
     QuantityBlock.VALUE_ATTRIBUTE: 5.0,
     QuantityBlock.UNIT_OF_MEASURE_ATTRIBUTE: ResourceStateMessage.QUANTITY_BLOCK_ATTRIBUTES[REACTIVE_POWER_ATTRIBUTE]
@@ -35,7 +36,8 @@ DEFAULT_STATE_OF_CHARGE = {
 DEFAULT_NODE = 2
 
 SUBCLASS_JSON = {
-    BUS_ATTRIBUTE: DEFAULT_BUS,
+    CUSTOMERID_ATTRIBUTE: DEFAULT_CUSTOMERID,
+   # BUS_ATTRIBUTE: DEFAULT_BUS,
     REAL_POWER_ATTRIBUTE: DEFAULT_REAL_POWER,
     REACTIVE_POWER_ATTRIBUTE: DEFAULT_REACTIVE_POWER,
     STATE_OF_CHARGE_ATTRIBUTE: DEFAULT_STATE_OF_CHARGE,
@@ -110,7 +112,8 @@ class TestResourceStateMessage(unittest.TestCase):
         self.assertEqual(message_copy.last_updated_in_epoch, message_full.last_updated_in_epoch)
         self.assertEqual(message_copy.triggering_message_ids, message_full.triggering_message_ids)
         self.assertEqual(message_copy.warnings, message_full.warnings)
-        self.assertEqual(message_copy.bus, message_full.bus)
+        #self.assertEqual(message_copy.bus, message_full.bus)
+        self.assertEqual(message_copy.customerid, message_full.customerid)
         self.assertEqual(message_copy.real_power, message_full.real_power)
         self.assertEqual(message_copy.reactive_power, message_full.reactive_power)
         self.assertEqual(message_copy.node, message_full.node)
@@ -124,7 +127,7 @@ class TestResourceStateMessage(unittest.TestCase):
         # check that when subclass specific attributes have different values
         # objects will not be equal
         different_values = {
-            "bus": "foo",
+            "customerid": "foo",
             "real_power": 200.0,
             "reactive_power": 10.0,
             "node": 3,
@@ -142,7 +145,7 @@ class TestResourceStateMessage(unittest.TestCase):
     def test_invalid_values(self):
         """Test that invalid attribute values are not accepted."""
         invalid_values = {
-            "Bus": [1],
+            "CustomerId": [1],
             "ReactivePower": ['foo', QuantityBlock(Value=1.0, UnitOfMeasure='kW')],
             "RealPower": [None, {QuantityBlock.VALUE_ATTRIBUTE: 'foo', QuantityBlock.UNIT_OF_MEASURE_ATTRIBUTE: 'kW'}],
             "Node": [4, "foo"],
