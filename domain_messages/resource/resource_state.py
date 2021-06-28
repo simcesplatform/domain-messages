@@ -75,10 +75,10 @@ class ResourceStateMessage(AbstractResultMessage):
     def state_of_charge(self) -> Union[QuantityBlock, None]:
         """Present amount of energy stored, % of rated kWh. Unit of measure: "%"."""
         return self.__state_of_charge
-    
+
     @customerid.setter
     def customerid(self, customerid: str):
-        """Set value for bus."""
+        """Set value for customerid."""
         if self._check_customerid(customerid):
             self.__customerid = customerid
             return
