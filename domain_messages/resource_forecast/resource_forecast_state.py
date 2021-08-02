@@ -27,7 +27,7 @@ class ResourceForecastPowerMessage(AbstractResultMessage):
     # Mapping from message JSON attributes to class attributes
     MESSAGE_ATTRIBUTES = {
         "Forecast": "forecast",
-        "ResourceName": "resource_name"
+        "ResourceId": "resource_id"
     }
     OPTIONAL_ATTRIBUTES = []
 
@@ -60,22 +60,22 @@ class ResourceForecastPowerMessage(AbstractResultMessage):
     )
 
     @property
-    def resource_name(self) -> str:
+    def resource_id(self) -> str:
         """The attribute for the name of resource that is forecasted."""
-        return self.__resource_name
+        return self.__resource_id
 
     @property
     def forecast(self) -> TimeSeriesBlock:
         """The attribute for forecast of the resource."""
         return self.__forecast
 
-    @resource_name.setter
-    def resource_name(self, resource_name: str):
+    @resource_id.setter
+    def resource_id(self, resource_id: str):
         """Set value for resource name that is forecasted."""
-        if self._check_resource_name(resource_name):
-            self.__resource_name = resource_name
+        if self._check_resource_name(resource_id):
+            self.__resource_id = resource_id
         else:
-            raise MessageValueError("Invalid value, {}, for attribute: resource_name".format(resource_name))
+            raise MessageValueError("Invalid value, {}, for attribute: resource_id".format(resource_id))
 
     @forecast.setter
     def forecast(self, forecast: Union[TimeSeriesBlock, Dict[str, Any]]):
@@ -96,14 +96,14 @@ class ResourceForecastPowerMessage(AbstractResultMessage):
         return (
             super().__eq__(other) and
             isinstance(other, ResourceForecastPowerMessage) and
-            self.resource_name == other.resource_name and
+            self.resource_id == other.resource_id and
             self.forecast == other.forecast
         )
 
     @classmethod
-    def _check_resource_name(cls, resource_name: str) -> bool:
-        """Check that value for resource_name is valid i.e. a string."""
-        return isinstance(resource_name, str)
+    def _check_resource_id(cls, resource_id: str) -> bool:
+        """Check that value for resource_id is valid i.e. a string."""
+        return isinstance(resource_id, str)
 
     @classmethod
     def _check_forecast(cls, forecast: Union[TimeSeriesBlock, Dict[str, Any]]) -> bool:
