@@ -72,7 +72,7 @@ class ResourceForecastPowerMessage(AbstractResultMessage):
     @resource_id.setter
     def resource_id(self, resource_id: str):
         """Set value for resource name that is forecasted."""
-        if self._check_resource_name(resource_id):
+        if self._check_resource_id(resource_id):
             self.__resource_id = resource_id
         else:
             raise MessageValueError("Invalid value, {}, for attribute: resource_id".format(resource_id))
