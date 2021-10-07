@@ -84,7 +84,7 @@ Two optional ways of including domain-messages are described here.
 
 ## How to add support for a new message type as a Python class
 
-See the [simulation-tools readme](simulation-tools/README.md)
+See the [simulation-tools readme](https://github.com/simcesplatform/simulation-tools)
 for general detailed instructions. Messages related to a certain domain topic can be placed to their own python module under a topic specific pakcage. They can then be imported in the package's \_\_init\_\_.py file to make their importing more convenient. For example the ResourceStateMessage class is located in the resource\_state module in the resource pakcage but it can be used with:
 
 ```python
