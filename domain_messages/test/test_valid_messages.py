@@ -1,3 +1,15 @@
+# Copyright 2021 Tampere University and VTT Technical Research Centre of Finland
+# This software was developed as a part of the ProCemPlus project: https://www.senecc.fi/projects/procemplus
+# This source code is licensed under the MIT license. See LICENSE in the repository root directory.
+# Author(s): Amir Safdarian <amir.safdarian@vtt.fi>
+#            Kalle Ruuth (TAU) <kalle.ruuth@tuni.fi>
+#            Keski-Koukkari Antti <antti.keski-koukkari@vtt.fi>
+#            Md Tanjimuddin <md.tanjimuddin@tuni.fi>
+#            Olli Suominen <olli.suominen@tuni.fi>
+#            Otto Hylli <otto.hylli@tuni.fi>
+#            Tanjim <tanjim0023@gmail.com>
+#            Ville Heikkilä <ville.heikkila@tuni.fi>
+#            Ville Mörsky (TAU) <ville.morsky@tuni.fi>
 """Tests that take the domain message examples from the wiki pages and create message objects."""
 
 import unittest
@@ -318,7 +330,7 @@ class TestValidMessages(unittest.TestCase):
 
     def test_resource_forecast_power_message(self):
         """Test creation of ResourceForecastPowerMessage with valid parameters."""
-        resource_name = "load1"
+        resource_id = "load1"
         forecast = TimeSeriesBlock(
             TimeIndex=[
                 "2020-06-25T00:00:00Z",
@@ -338,7 +350,7 @@ class TestValidMessages(unittest.TestCase):
             ResourceForecastPowerMessage,
             EpochNumber=EPOCH_NUMBER,
             TriggeringMessageIds=TRIGGERING_MESSAGE_IDS,
-            ResourceName=resource_name,
+            ResourceId=resource_id,
             Forecast=forecast
         )
 
@@ -346,7 +358,7 @@ class TestValidMessages(unittest.TestCase):
         self.assertIsInstance(message, ResourceForecastPowerMessage)
         if isinstance(message, ResourceForecastPowerMessage):
             self.assertEqual(message.message_type, "ResourceForecastState.Power")
-            self.assertEqual(message.resource_name, resource_name)
+            self.assertEqual(message.resource_id, resource_id)
             self.assertEqual(message.forecast, forecast)
 
 

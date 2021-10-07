@@ -8,18 +8,18 @@ The following messages have been defined:
 
 - `ResourceStateMessage`
     - Child class of AbstractResultMessage
-    - Adds Bus, RealPower, ReactivePower, Node and StateOfCharge
-    - Definition: [ResourceState](https://wiki.eduuni.fi/display/tuniSimCES/ResourceState)
+    - Adds CustomerId, RealPower, ReactivePower, Node and StateOfCharge
+    - Definition: [ResourceState](https://simcesplatform.github.io/energy_msg-resourcestate/)
 - `PriceForecastStateMessage`
     - Child class of AbstractResultMessage
     - Adds MarketId, ResourceId, PricingType, Prices
-    - Definition: [ResourceState](https://wiki.eduuni.fi/display/tuniSimCES/PriceForecastState)
+    - Definition: [PriceForecastStateMessage](https://simcesplatform.github.io/energy_msg-priceforecaststate/)
     
 ## How to include domain-messages to your own project
 
-These instructions try to take into account the problems arising from the fact that the GitLab server uses self signed SSL certificate. Two optional ways of including domain-messages are described here.
+Two optional ways of including domain-messages are described here.
 
-- Manual copy of the domain\_messages folder
+- Manual copy of the domain\_messages folder (not recommended)
 
     - The easiest way to get the most recent version of the library.
     - No easy way of checking if there are updates for the library code. For a work in progress library this is a significant downside.
@@ -28,7 +28,7 @@ These instructions try to take into account the problems arising from the fact t
     - Clone the domain-messages repository:
 
         ```bash
-        git -c http.sslverify=false clone https://git.ain.rd.tut.fi/procemplus/domain-messages.git
+        git clone https://github.com/simcesplatform/domain-messages.git
         ```
 
     - Copy the `domain_messages` folder from domain-messages repository manually to the root folder of your own Python project.
@@ -39,7 +39,7 @@ These instructions try to take into account the problems arising from the fact t
        from domain_messages.resource import ResourceStateMessage
        ```
 
-- Using domain-messages as a Git submodule in your own Git repository
+- Using domain-messages as a Git submodule in your own Git repository (recommended)
     - Allows an easy way to update to the newest version of the library.
     - Requires the use of Git repository (some kind of version control is always recommended when working source code).
     - Requires more initial setup than manual copying.
@@ -50,13 +50,11 @@ These instructions try to take into account the problems arising from the fact t
 
         ```bash
         # run this from the root folder of your Git repository
-        git -c http.sslverify=false submodule add -b master https://git.ain.rd.tut.fi/procemplus/domain-messages.git
+        git submodule add -b master https://github.com/simcesplatform/domain-messages.git
         git submodule init
         cd domain-messages
-        git submodule init
-        git config http.sslverify false --local
+        git submodule init    
         cd simulation-tools
-        git config http.sslverify false --local
         cd ../..
         git submodule update --remote --recursive
         ```
